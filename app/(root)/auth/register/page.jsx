@@ -20,45 +20,70 @@ import ButtonLoading from "@/components/Application/ButtonLoading";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import Link from "next/link";
-import { WEBSITE_REGISTER } from "@/routers/WebsiteRoute";
+import { WEBSITE_LOGIN } from "@/routers/WebsiteRoute";
+const RegisterPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [isTypePassword, setIsTypePassword] = useState(true);
 
-const Loginpage = () => {
-	const [loading, setLoading] = useState(false);
-	const [isTypePassword, setIsTypePassword] = useState(true);
+  const formSchema = zSchema
+    .pick({
+      name: true,
+      email: true,
+      password: true,
+    }).extend({
+      confirmPassword: z.string()
+    }).refine((data) => data.password === data.confirmPassword, {
+      message: "Password and Confirm Password must be same",
+      path: ["confirmPassword"],
+    }); 
+   
 
-	const formSchema = zSchema
-		.pick({
-			email: true,
-		})
-		.extend({
-			password: z.string().min(3, "Password felid is required"),
-		});
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-	const form = useForm({
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			email: "",
-			password: "",
-		},
-	});
+  const handleRegisterSubmit = async (values) => {
+    console.log("Form submitted:", values);
+  };
 
-	const handleLoginSubmit = async (values) => {
-		console.log("Form submitted:", values);
-	};
-
-	return (
+  return (
 		<Card className="w-[400px]">
 			<CardContent>
 				<div className="flex items-center justify-center mb-2">
 					<Image src={Logo.src} alt="logo" height={150} width={150} />
 				</div>
 				<div className="text-center">
-					<h1 className="text-3xl font-bold mb-2">Login into account</h1>
-					<p>Login into your account by filling out the form below</p>
+					<h1 className="text-3xl font-bold mb-2">Create account</h1>
+					<p>Create new account by filling out the form below</p>
 				</div>
 				<div className="mt-5">
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(handleLoginSubmit)}>
+						<form onSubmit={form.handleSubmit(handleRegisterSubmit)}>
+							<div className="mb-5">
+								<FormField
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Full Name</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													placeholder="John Doe"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
 							<div className="mb-5">
 								<FormField
 									control={form.control}
@@ -92,6 +117,25 @@ const Loginpage = () => {
 													{...field}
 												/>
 											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+							<div className="mb-5">
+								<FormField
+									control={form.control}
+									name="password"
+									render={({ field }) => (
+										<FormItem className="relative">
+											<FormLabel>Confirm Password</FormLabel>
+											<FormControl>
+												<Input
+													type={isTypePassword ? "password" : "text"}
+													placeholder="***********"
+													{...field}
+												/>
+											</FormControl>
 											<button
 												type="button"
 												onClick={() => setIsTypePassword(!isTypePassword)}
@@ -107,27 +151,16 @@ const Loginpage = () => {
 							<div className="mb-5">
 								<ButtonLoading
 									type={"submit"}
-									text={"Login"}
+									text={"Create Account"}
 									loading={loading}
 									className={"w-full cursor-pointer"}
 								/>
 							</div>
 							<div className="text-center">
 								<div className="flex justify-center items-center gap-2">
-									<p>Don't have an account?</p>
-									<Link
-										href={WEBSITE_REGISTER}
-										className="text-primary underline"
-									>
-										Register
-									</Link>
-								</div>
-								<div className="mt-2">
-									<Link
-										href={""}
-										className="text-primary underline"
-									>
-										Forget Password
+									<p>Already have an account?</p>
+									<Link href={WEBSITE_LOGIN} className="text-primary underline">
+										Login
 									</Link>
 								</div>
 							</div>
@@ -139,4 +172,4 @@ const Loginpage = () => {
 	);
 };
 
-export default Loginpage;
+export default RegisterPage

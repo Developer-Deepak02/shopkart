@@ -21,38 +21,57 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import Link from "next/link";
 import { WEBSITE_LOGIN } from "@/routers/WebsiteRoute";
+import axios from "axios";
 const RegisterPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [isTypePassword, setIsTypePassword] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const [isTypePassword, setIsTypePassword] = useState(true);
 
-  const formSchema = zSchema
-    .pick({
-      name: true,
-      email: true,
-      password: true,
-    }).extend({
-      confirmPassword: z.string()
-    }).refine((data) => data.password === data.confirmPassword, {
-      message: "Password and Confirm Password must be same",
-      path: ["confirmPassword"],
-    }); 
-   
+	const formSchema = zSchema
+		.pick({
+			name: true,
+			email: true,
+			password: true,
+		})
+		.extend({
+			confirmPassword: z.string(),
+		})
+		.refine((data) => data.password === data.confirmPassword, {
+			message: "Password and Confirm Password must be same",
+			path: ["confirmPassword"],
+		});
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
+	const form = useForm({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: "",
+			email: "",
+			password: "",
+			confirmPassword: "",
+		},
+	});
 
-  const handleRegisterSubmit = async (values) => {
-    console.log("Form submitted:", values);
-  };
+	const handleRegisterSubmit = async (values) => {
+		try {
+			setLoading(true);
+			const { data: registerResponse } = await axios.post(
+				"/api/auth/register",
+				values
+			);
+			if (!registerResponse.success) {
+				throw new Error(registerResponse.message);
+			}
 
-  return (
+			form.reset();
+			alert(registerResponse.message);
+
+		} catch (error) {
+			alert(error.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	return (
 		<Card className="w-[400px]">
 			<CardContent>
 				<div className="flex items-center justify-center mb-2">
@@ -68,16 +87,12 @@ const RegisterPage = () => {
 							<div className="mb-5">
 								<FormField
 									control={form.control}
-									name="email"
+									name="name"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Full Name</FormLabel>
 											<FormControl>
-												<Input
-													type="text"
-													placeholder="John Doe"
-													{...field}
-												/>
+												<Input type="text" placeholder="John Doe" {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -112,7 +127,7 @@ const RegisterPage = () => {
 											<FormLabel>Password</FormLabel>
 											<FormControl>
 												<Input
-													type={isTypePassword ? "password" : "text"}
+													type="password"
 													placeholder="***********"
 													{...field}
 												/>
@@ -125,7 +140,7 @@ const RegisterPage = () => {
 							<div className="mb-5">
 								<FormField
 									control={form.control}
-									name="password"
+									name="confirmPassword"
 									render={({ field }) => (
 										<FormItem className="relative">
 											<FormLabel>Confirm Password</FormLabel>
@@ -172,4 +187,4 @@ const RegisterPage = () => {
 	);
 };
 
-export default RegisterPage
+export default RegisterPage;

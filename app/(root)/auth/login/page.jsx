@@ -24,8 +24,11 @@ import { WEBSITE_REGISTER } from "@/routers/WebsiteRoute";
 import axios from "axios";
 import { showToast } from "@/lib/showToast";
 import OTPVerification from "@/components/Application/OTPVerification";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/reducer/authReducer";
 
 const Loginpage = () => {
+	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 	const [otpVerificationLoading, setOtpVerificationLoading] = useState(false);
 	const [isTypePassword, setIsTypePassword] = useState(true);
@@ -81,8 +84,9 @@ const Loginpage = () => {
 			}
 
 			setOtpEmail('');
-			form.reset();
 			showToast("success", otpResponse.message);
+			// update redux store
+			dispatch(login(otpResponse.data));
 		} catch (error) {
 			showToast("error", error.message);
 		} finally {

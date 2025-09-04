@@ -20,7 +20,7 @@ import ButtonLoading from "@/components/Application/ButtonLoading";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import Link from "next/link";
-import { WEBSITE_REGISTER } from "@/routers/WebsiteRoute";
+import { WEBSITE_REGISTER, WEBSITE_RESETPASSWORD } from "@/routers/WebsiteRoute";
 import axios from "axios";
 import { showToast } from "@/lib/showToast";
 import OTPVerification from "@/components/Application/OTPVerification";
@@ -174,7 +174,7 @@ const Loginpage = () => {
 											</Link>
 										</div>
 										<div className="mt-2">
-											<Link href={""} className="text-primary underline">
+											<Link href={WEBSITE_RESETPASSWORD} className="text-primary underline">
 												Forget Password
 											</Link>
 										</div>

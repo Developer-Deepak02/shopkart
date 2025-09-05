@@ -1,16 +1,15 @@
+"use client"
 import React from "react";
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSub,
 	SidebarMenuSubButton,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import logoBlack from "@/public/assets/logo-black.png";
 import logoWhite from "@/public/assets/logo-white.png";
@@ -28,8 +27,9 @@ import { CollapsibleContent } from '@radix-ui/react-collapsible';
 
 
 const AppSidebar = () => {
+	const {toggleSidebar} = useSidebar();
 	return (
-		<Sidebar>
+		<Sidebar className="">
 			<SidebarHeader className="border-b h-17 mb-2 p-0">
 				<div className="flex items-center justify-between gap-6 px-2">
 					<Image
@@ -44,7 +44,7 @@ const AppSidebar = () => {
 						className="hidden dark:block"
 						alt="logo"
 					/>
-					<Button type="button" size="icon" className="">
+					<Button onClick={toggleSidebar} type="button" size="icon" className="md:hidden">
 						<IoMdClose />
 					</Button>
 				</div>
